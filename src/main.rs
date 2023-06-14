@@ -4,7 +4,8 @@ use std::{
     path::PathBuf,
 };
 
-use structopt::StructOpt;
+use base64::{Engine as _, engine::general_purpose};
+use clap::Parser;
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -30,7 +31,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let (encoding, data) = if mime.starts_with("text/") {
         ("", urlencoding::encode(std::str::from_utf8(&content)?).into_owned())
     } else {
-        (";base64", base64::encode(&content))
+        (";base64", general_purpose::STANDARD.encode(&content))
     };
 
     print!("data:{}{},{}", mime, encoding, data);
