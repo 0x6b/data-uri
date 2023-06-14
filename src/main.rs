@@ -6,20 +6,20 @@ use std::{
 
 use structopt::StructOpt;
 
-#[derive(StructOpt)]
-#[structopt(name = "data-uri", about = "Convert file to data URI, then output it to stdout")]
+#[derive(Parser)]
+#[command(version, about)]
 struct Opt {
     /// Path to a file to convert. If text, assume UTF-8.
-    #[structopt(parse(from_os_str))]
+    #[arg()]
     file: PathBuf,
 
     /// MIME type. If none specified, will determine automagically.
-    #[structopt(short, long)]
+    #[arg(short, long)]
     mime_type: Option<String>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let opt: Opt = Opt::from_args();
+    let opt = Opt::parse();
     let content = fs::read(opt.file)?;
 
     let mime = match opt.mime_type {
