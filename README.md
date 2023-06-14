@@ -18,21 +18,17 @@ cargo uninstall data-uri
 
 ```shell
 $ data-uri --help
-data-uri 0.1.0
 Convert file to data URI, then output it to stdout
 
-USAGE:
-    data-uri [OPTIONS] <file>
+Usage: data-uri [OPTIONS] <FILE>
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+Arguments:
+  <FILE>  Path to a file to convert. If text, assume UTF-8
 
-OPTIONS:
-    -m, --mime-type <mime-type>    MIME type. If none specified, will determine automagically
-
-ARGS:
-    <file>    Path to a file to convert. If text, assume UTF-8
+Options:
+  -m, --mime-type <MIME_TYPE>  MIME type. If none specified, will determine automagically
+  -h, --help                   Print help
+  -V, --version                Print version
 ```
 
 ## Privacy

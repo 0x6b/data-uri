@@ -2,11 +2,15 @@
 name = "data-uri"
 version = "0.1.0"
 edition = "2021"
+description = "Convert file to data URI, then output it to stdout"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.20.0"
-structopt = "0.3.26"
+base64 = "0.21.2"
+clap = { version = "4.3.0", features = ["derive"] }
 tree_magic_mini = { version = "3.0.3", features = ["tree_magic_db", "with-gpl-data"] }
 urlencoding = "2.1.2"
+
+[dev-dependencies]
+reqwest = { version = "0.11.18", features = ["blocking"] }
