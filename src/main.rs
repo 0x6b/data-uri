@@ -23,10 +23,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn convert(content: &[u8], mime_type: Option<String>) -> Result<String, Box<dyn Error>> {
-    let mime_type = match mime_type {
-        None => tree_magic_mini::from_u8(content).to_string(),
-        Some(m) => m,
-    };
+    let mime_type = mime_type.unwrap_or_else(|| tree_magic_mini::from_u8(content).to_string());
 
     let (encoding, data) = if mime_type.starts_with("text/") {
         (
