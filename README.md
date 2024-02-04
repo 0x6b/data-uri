@@ -37,4 +37,4 @@ This CLI never send your data to any server.
 
 ## License
 
-This CLI is released under the GNU General Public License v3.0. This is because this CLI contains the magic definitions distributed under the GPL-2.0 o later. See [tree_magic/magic_db at mini · mbrubeck/tree_magic](https://github.com/mbrubeck/tree_magic/tree/adc1b4024cf0a44fdf9692ee721d36e5e8a03665/magic_db) and [LICENSE](LICENSE) for details.
+This CLI is released under the GNU General Public License v3.0. This is because this CLI contains the magic definitions distributed under the GPL-2.0 or later. See [tree_magic/magic_db at mini · mbrubeck/tree_magic](https://github.com/mbrubeck/tree_magic/tree/adc1b4024cf0a44fdf9692ee721d36e5e8a03665/magic_db) and [LICENSE](LICENSE) for details.
