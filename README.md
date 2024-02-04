@@ -16,7 +16,7 @@ cargo uninstall data-uri
 
 ## Usage
 
-```shell
+```console
 $ data-uri --help
 Convert file to data URI, then output it to stdout
 
