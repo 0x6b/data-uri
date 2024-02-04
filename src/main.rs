@@ -1,7 +1,8 @@
-use std::{error::Error, fs, path::PathBuf};
+use std::{borrow::Cow, error::Error, fs::read, path::PathBuf, str::from_utf8};
 
 use base64::{engine::general_purpose, Engine as _};
 use clap::Parser;
+use urlencoding::encode;
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -17,8 +18,7 @@ struct Opt {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let Opt { file, mime_type } = Opt::parse();
-    let content = fs::read(file)?;
-    println!("{}", convert(&content, mime_type)?);
+    println!("{}", convert(&read(file)?, mime_type)?);
     Ok(())
 }
 
@@ -26,12 +26,9 @@ fn convert(content: &[u8], mime_type: Option<String>) -> Result<String, Box<dyn 
     let mime_type = mime_type.unwrap_or_else(|| tree_magic_mini::from_u8(content).to_string());
 
     let (encoding, data) = if mime_type.starts_with("text/") {
-        (
-            "",
-            urlencoding::encode(std::str::from_utf8(content)?).into_owned(),
-        )
+        ("", encode(from_utf8(content)?))
     } else {
-        (";base64", general_purpose::STANDARD.encode(content))
+        (";base64", Cow::from(general_purpose::STANDARD.encode(content)))
     };
 
     Ok(format!("data:{}{},{}", mime_type, encoding, data))
@@ -39,20 +36,18 @@ fn convert(content: &[u8], mime_type: Option<String>) -> Result<String, Box<dyn 
 
 #[cfg(test)]
 mod test {
-    use std::fs;
+    use std::fs::read;
+
+    use reqwest::blocking::get;
 
     use crate::convert;
 
     #[test]
-    fn test_convert() {
-        let content =
-            reqwest::blocking::get("https://www.rust-lang.org/logos/rust-logo-512x512.png")
-                .unwrap()
-                .bytes()
-                .unwrap();
-        let data = convert(content.as_ref(), None).unwrap();
-        let test = fs::read("fixtures/rust-logo-512x512.txt").unwrap();
-
-        assert_eq!(data, String::from_utf8(test).unwrap());
+    fn test_convert() -> Result<(), Box<dyn std::error::Error>> {
+        let data =
+            convert(&get("https://www.rust-lang.org/logos/rust-logo-512x512.png")?.bytes()?, None)?;
+        let fixture = read("fixtures/rust-logo-512x512.txt")?;
+        assert_eq!(data, String::from_utf8(fixture)?);
+        Ok(())
     }
 }
