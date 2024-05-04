@@ -33,7 +33,7 @@ Options:
 
 ## Privacy
 
-This CLI never send your data to any server.
+This CLI never sends your data to any server.
 
 ## License
 
