@@ -1,37 +1,23 @@
-use std::{borrow::Cow, fs::read, ops::Deref, path::Path, str::from_utf8};
+use std::{borrow::Cow, fs::read, path::Path, str::from_utf8};
 
 use anyhow::Result;
 use base64::{engine::general_purpose, Engine as _};
-use clap::Parser;
 use urlencoding::encode;
 
-use crate::state::{Initialized, State, Uninitialized};
-
-pub struct DataUriConverter<S>
-where
-    S: State,
-{
-    state: S,
+pub struct DataUriConverter {
+    data: Vec<u8>,
+    mime_type: String,
 }
 
-impl<S> Deref for DataUriConverter<S>
-where
-    S: State,
-{
-    type Target = S;
-
-    fn deref(&self) -> &Self::Target {
-        &self.state
-    }
-}
-
-impl DataUriConverter<Uninitialized> {
-    pub fn try_new() -> Result<DataUriConverter<Initialized>> {
-        let Uninitialized { file, mime_type } = Uninitialized::parse();
-        Self::new(&file, mime_type)
+impl DataUriConverter {
+    pub fn from_data(data: &[u8], mime_type: &str) -> Result<DataUriConverter> {
+        Ok(DataUriConverter {
+            data: data.to_vec(),
+            mime_type: mime_type.to_string(),
+        })
     }
 
-    pub fn new<P>(file: &P, mime_type: Option<String>) -> Result<DataUriConverter<Initialized>>
+    pub fn from_file<P>(file: P, mime_type: Option<String>) -> Result<DataUriConverter>
     where
         P: AsRef<Path>,
     {
@@ -39,12 +25,9 @@ impl DataUriConverter<Uninitialized> {
         let mime_type = mime_type
             .clone()
             .map_or_else(|| tree_magic_mini::from_u8(&data).to_string(), |mime_type| mime_type);
-
-        Ok(DataUriConverter { state: Initialized { data, mime_type } })
+        DataUriConverter::from_data(&data, &mime_type)
     }
-}
 
-impl DataUriConverter<Initialized> {
     pub fn convert(&self) -> Result<String> {
         let (encoding, data) = if self.mime_type.starts_with("text/") {
             ("", encode(from_utf8(&self.data)?))
@@ -60,8 +43,8 @@ impl DataUriConverter<Initialized> {
 mod test {
     #[test]
     fn test_convert() -> anyhow::Result<()> {
-        let data = crate::DataUriConverter::new(
-            &"fixtures/rust-logo-512x512.png",
+        let data = crate::DataUriConverter::from_file(
+            "fixtures/rust-logo-512x512.png",
             Some("image/png".to_string()),
         )?
         .convert()?;
