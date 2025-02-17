@@ -1,23 +1,12 @@
-[package]
-name = "data-uri"
-version = "1.0.4"
+[workspace]
+members = ["lib", "bin"]
+resolver = "2"
+
+[workspace.package]
+version = "1.0.5"
 edition = "2021"
-description = "Convert file to data URI, then output it to stdout"
 
-[lib]
-name = "data_uri_converter"
-path = "src/lib.rs"
-
-[dependencies]
+[workspace.dependencies]
 # Error handling
 anyhow = "1.0"
 
-# Encodings
-base64 = "0.22"
-urlencoding = "2.1"
-
-# CLI argument parsing
-clap = { version = "4.5", features = ["derive"] }
-
-# MIME type detection
-tree_magic_mini = { version = "3.1", features = ["tree_magic_db", "with-gpl-data"] }
