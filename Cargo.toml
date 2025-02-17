@@ -10,14 +10,14 @@ path = "src/lib.rs"
 
 [dependencies]
 # Error handling
-anyhow = "1.0.82"
+anyhow = "1.0"
 
 # Encodings
-base64 = "0.22.1"
-urlencoding = "2.1.3"
+base64 = "0.22"
+urlencoding = "2.1"
 
 # CLI argument parsing
-clap = { version = "4.5.4", features = ["derive"] }
+clap = { version = "4.5", features = ["derive"] }
 
 # MIME type detection
-tree_magic_mini = { version = "3.1.4", features = ["tree_magic_db", "with-gpl-data"] }
+tree_magic_mini = { version = "3.1", features = ["tree_magic_db", "with-gpl-data"] }
