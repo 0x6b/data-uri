@@ -111,14 +111,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b63caa9aa9397e2d9480a9b13673856c78d8ac123288526c37d7839f2a86990"
 
 [[package]]
-name = "data-uri"
-version = "1.0.4"
+name = "data_uri_converter"
+version = "1.0.5"
 dependencies = [
  "anyhow",
  "base64",
- "clap",
  "tree_magic_mini",
  "urlencoding",
+]
+
+[[package]]
+name = "data_uri_converter-bin"
+version = "1.0.5"
+dependencies = [
+ "anyhow",
+ "clap",
+ "data_uri_converter",
 ]
 
 [[package]]
