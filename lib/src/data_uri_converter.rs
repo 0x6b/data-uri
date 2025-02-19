@@ -10,10 +10,10 @@ pub struct DataUriConverter {
 }
 
 impl DataUriConverter {
-    pub fn from_data(data: &[u8], mime_type: &str) -> Result<DataUriConverter> {
+    pub fn from_data(data: &[u8], mime_type: Option<String>) -> Result<DataUriConverter> {
         Ok(DataUriConverter {
             data: data.to_vec(),
-            mime_type: mime_type.to_string(),
+            mime_type: mime_type.unwrap_or_else(|| tree_magic_mini::from_u8(data).to_string()),
         })
     }
 
@@ -21,11 +21,7 @@ impl DataUriConverter {
     where
         P: AsRef<Path>,
     {
-        let data = read(file)?;
-        let mime_type = mime_type
-            .clone()
-            .map_or_else(|| tree_magic_mini::from_u8(&data).to_string(), |mime_type| mime_type);
-        DataUriConverter::from_data(&data, &mime_type)
+        DataUriConverter::from_data(&read(file)?, mime_type)
     }
 
     pub fn convert(&self) -> Result<String> {
