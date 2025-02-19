@@ -11,7 +11,7 @@ use urlencoding::encode;
 /// - [RFC 2397: The "data" URL scheme](https://www.rfc-editor.org/rfc/rfc2397)
 pub struct DataUriConverter {
     data: Vec<u8>,
-    mime_type: String,
+    media_type: String,
 }
 
 impl DataUriConverter {
@@ -20,15 +20,15 @@ impl DataUriConverter {
     /// # Arguments
     ///
     /// - `data` - Data to convert
-    /// - `mime_type` - MIME type of the data. If [`None`], will determine automagically.
+    /// - `media_type` - MIME type of the data. If [`None`], will determine automagically.
     ///
     /// # Returns
     ///
     /// A new instance of [`DataUriConverter`] that is ready to convert the data to a data URI.
-    pub fn from_data(data: &[u8], mime_type: Option<String>) -> Result<DataUriConverter> {
+    pub fn from_data(data: &[u8], media_type: Option<String>) -> Result<DataUriConverter> {
         Ok(DataUriConverter {
             data: data.to_vec(),
-            mime_type: mime_type.unwrap_or_else(|| tree_magic_mini::from_u8(data).to_string()),
+            media_type: media_type.unwrap_or_else(|| tree_magic_mini::from_u8(data).to_string()),
         })
     }
 
@@ -37,20 +37,20 @@ impl DataUriConverter {
     /// # Arguments
     ///
     /// - `file` - Path to a file to convert
-    /// - `mime_type` - MIME type of the data. If [`None`], will determine automagically.
+    /// - `media_type` - MIME type of the data. If [`None`], will determine automagically.
     ///
     /// # Returns
     ///
     /// A new instance of [`DataUriConverter`] that is ready to convert the data to a data URI.
-    pub fn from_file<P>(file: P, mime_type: Option<String>) -> Result<DataUriConverter>
+    pub fn from_file<P>(file: P, media_type: Option<String>) -> Result<DataUriConverter>
     where
         P: AsRef<Path>,
     {
-        DataUriConverter::from_data(&read(file)?, mime_type)
+        DataUriConverter::from_data(&read(file)?, media_type)
     }
 
     pub fn convert(&self) -> Result<String> {
-        let (encoding, data) = if self.mime_type.starts_with("text/") {
+        let (encoding, data) = if self.media_type.starts_with("text/") {
             // If the MIME type starts with `text/`, the data should be represented using ASCII
             // encoding for octets inside the range of safe URL characters and using the standard
             // `%xx` hex encoding of URLs for octets outside that range.
@@ -65,7 +65,7 @@ impl DataUriConverter {
         // ```
         // data:[<mediatype>][;base64],<data>
         // ```
-        Ok(format!("data:{}{encoding},{data}", self.mime_type))
+        Ok(format!("data:{}{encoding},{data}", self.media_type))
     }
 }
 
