@@ -26,9 +26,13 @@ Arguments:
   <FILE>  Path to a file to convert. If text, assume UTF-8
 
 Options:
-  -m, --media-type <MEDIA_TYPE>  Internet media type specification (with optional parameters.) If none specified, will determine automagically
-  -h, --help                     Print help
-  -V, --version                  Print version
+  -m, --media-type <MEDIA_TYPE>
+          Internet media type specification (with optional parameters.) If none
+          specified, will determine automagically
+  -h, --help
+          Print help
+  -V, --version
+          Print version
 ```
 
 ## Privacy
