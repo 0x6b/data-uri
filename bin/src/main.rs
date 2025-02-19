@@ -7,14 +7,15 @@ pub struct Args {
     #[arg()]
     pub file: std::path::PathBuf,
 
-    /// MIME type. If none specified, will determine automagically.
+    /// Internet media type specification (with optional parameters.) If none specified, will
+    /// determine automagically.
     #[arg(short, long)]
-    pub mime_type: Option<String>,
+    pub media_type: Option<String>,
 }
 
 fn main() -> anyhow::Result<()> {
-    let Args { ref file, mime_type } = Args::parse();
-    println!("{}", data_uri_converter::DataUriConverter::from_file(file, mime_type)?.convert()?);
+    let Args { ref file, media_type } = Args::parse();
+    println!("{}", &data_uri_converter::DataUriConverter::from_file(file, media_type)?.convert()?);
 
     Ok(())
 }
