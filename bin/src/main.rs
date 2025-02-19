@@ -15,7 +15,7 @@ pub struct Args {
 
 fn main() -> anyhow::Result<()> {
     let Args { ref file, media_type } = Args::parse();
-    println!("{}", data_uri_converter::DataUriConverter::from_file(file, media_type)?.convert()?);
+    println!("{}", &data_uri_converter::DataUriConverter::from_file(file, media_type)?.convert()?);
 
     Ok(())
 }
