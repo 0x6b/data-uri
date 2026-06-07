@@ -7,7 +7,7 @@ edition.workspace = true
 anyhow.workspace = true
 
 # MIME type detection
-tree_magic_mini = { version = "3.1", features = ["tree_magic_db", "with-gpl-data"] }
+tree_magic_mini = { version = "3.2", features = ["with-gpl-data"] }
 
 # Encodings
 base64 = "0.22"

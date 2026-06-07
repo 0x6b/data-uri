@@ -1,11 +1,15 @@
+use std::path::PathBuf;
+
+use anyhow::Result;
 use clap::Parser;
+use data_uri_converter::DataUriConverter;
 
 #[derive(Parser)]
 #[command(version, about)]
 pub struct Args {
     /// Path to a file to convert. If text, assume UTF-8.
     #[arg()]
-    pub file: std::path::PathBuf,
+    pub file: PathBuf,
 
     /// Internet media type specification (with optional parameters.) If none specified, will
     /// determine automagically.
@@ -13,9 +17,9 @@ pub struct Args {
     pub media_type: Option<String>,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let Args { ref file, media_type } = Args::parse();
-    println!("{}", &data_uri_converter::DataUriConverter::from_file(file, media_type)?.convert()?);
+    println!("{}", &DataUriConverter::from_file(file, media_type)?.convert()?);
 
     Ok(())
 }

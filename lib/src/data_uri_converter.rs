@@ -1,7 +1,8 @@
 use std::{borrow::Cow, fs::read, ops::Deref, path::Path, str::from_utf8};
 
 use anyhow::Result;
-use base64::{engine::general_purpose, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
+use tree_magic_mini::from_u8;
 use urlencoding::encode;
 
 /// A marker trait for state, to prevent impossible thing (e.g. converting data to data URI without
@@ -63,8 +64,7 @@ impl DataUriConverter<Uninitialized> {
         Ok(DataUriConverter {
             inner: ReadyToConvert {
                 data: data.to_vec(),
-                media_type: media_type
-                    .unwrap_or_else(|| tree_magic_mini::from_u8(data).to_string()),
+                media_type: media_type.unwrap_or_else(|| from_u8(data).to_string()),
             },
         })
     }
@@ -100,7 +100,7 @@ impl DataUriConverter<ReadyToConvert> {
             ("", encode(from_utf8(&self.data)?))
         } else {
             // Otherwise, the data should be represented using base64 encoding.
-            (";base64", Cow::from(general_purpose::STANDARD.encode(&self.data)))
+            (";base64", Cow::from(STANDARD.encode(&self.data)))
         };
 
         // The URLs are of the form:
@@ -114,11 +114,17 @@ impl DataUriConverter<ReadyToConvert> {
 
 #[cfg(test)]
 mod test {
+    #[cfg(test)]
+    use std::fs::read;
+
+    #[cfg(test)]
+    use crate::DataUriConverter;
+
     #[test]
     fn test_convert() -> anyhow::Result<()> {
-        let data = crate::DataUriConverter::from_file("fixtures/rust-logo-512x512.png", None)?
-            .convert()?;
-        let fixture = std::fs::read("fixtures/rust-logo-512x512.txt")?;
+        let data =
+            DataUriConverter::from_file("fixtures/rust-logo-512x512.png", None)?.convert()?;
+        let fixture = read("fixtures/rust-logo-512x512.txt")?;
         assert_eq!(data, String::from_utf8(fixture)?);
         Ok(())
     }
